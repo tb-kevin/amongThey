@@ -11,12 +11,13 @@ import (
 
 // SpriteSheet represents a collection of sprite images.
 type SpriteSheet struct {
-	Floor  *ebiten.Image
-	Wall   *ebiten.Image
-	Statue *ebiten.Image
-	Tube   *ebiten.Image
-	Crown  *ebiten.Image
-	Portal *ebiten.Image
+	Floor       *ebiten.Image
+	Wall        *ebiten.Image
+	Statue      *ebiten.Image
+	Tube        *ebiten.Image
+	Crown       *ebiten.Image
+	Portal      *ebiten.Image
+	RunnerImage *ebiten.Image
 }
 
 // LoadSpriteSheet loads the embedded SpriteSheet.
@@ -25,8 +26,13 @@ func LoadSpriteSheet(tileSize int) (*SpriteSheet, error) {
 	if err != nil {
 		return nil, err
 	}
+	// imgRunner, _, err := image.Decode(bytes.NewReader(images.Runner_png))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	sheet := ebiten.NewImageFromImage(img)
+	// RunnerImage := ebiten.NewImageFromImage(imgRunner)
 
 	// spriteAt returns a sprite at the provided coordinates.
 	spriteAt := func(x, y int) *ebiten.Image {
@@ -41,6 +47,7 @@ func LoadSpriteSheet(tileSize int) (*SpriteSheet, error) {
 	s.Tube = spriteAt(3, 4)
 	s.Crown = spriteAt(8, 6)
 	s.Portal = spriteAt(5, 6)
+	s.RunnerImage = spriteAt(6, 4)
 
 	return s, nil
 }
