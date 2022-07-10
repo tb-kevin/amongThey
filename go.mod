@@ -5,6 +5,11 @@ go 1.18
 require github.com/hajimehoshi/ebiten/v2 v2.3.5
 
 require (
+	github.com/hajimehoshi/ebiten/v2 v2.3.5
+	github.com/jakecoffman/cp v1.2.1
+)
+
+require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20220320163800-277f93cfa958 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/jezek/xgb v1.0.0 // indirect
