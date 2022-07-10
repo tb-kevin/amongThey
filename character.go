@@ -60,11 +60,6 @@ func init() {
 		playerPosX: 0,
 		playerPosY: 0,
 	}
-	// Decode an image from the image file's byte slice.
-	// Now the byte slice is generated with //go:generate for Go 1.15 or older.
-	// If you use Go 1.16 or newer, it is strongly recommended to use //go:embed to embed the image file.
-	// See https://pkg.go.dev/embed for more details.
-
 }
 
 func (g *Game) Update() error {
@@ -72,9 +67,6 @@ func (g *Game) Update() error {
 	g.space.Step(1.0 / float64(ebiten.MaxTPS()))
 	g.keys = inpututil.AppendPressedKeys(g.keys[:0])
 	for _, k := range g.keys {
-		// TODO [bug]
-		// Don't allow double speed when arrow + wasd keys are pressed at the same
-		// time (in same direction); just accept the last used key. (chris)
 		if k == ebiten.KeyRight || k == ebiten.KeyD {
 			g.playerPosX += 3
 		} else if k == ebiten.KeyLeft || k == ebiten.KeyA {
@@ -88,13 +80,6 @@ func (g *Game) Update() error {
 
 	return nil
 }
-
-// checkCollisions will make sure the player's X,Y positions will collide
-// against the screen boundaries (window edges), and certain image tiles that
-// are setup to be a boundary.
-// TODO: setup logic to signify which image tiles have a collision boundary.
-//       (chris)
-
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	op := &ebiten.DrawImageOptions{}
@@ -119,11 +104,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				g.space.AddShape(shape)
 			}
 
-			// add tile image to screen
 		}
 	}
 
-	// Character image:
 	op.GeoM.Translate(float64(g.playerPosX), float64(g.playerPosY))
 
 	body := cp.NewBody(1.0, cp.INFINITY)
@@ -133,7 +116,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	shape.SetElasticity(0)
 	shape.SetCollisionType(1)
 	body.SetPosition(cp.Vector{X: float64(g.playerPosX), Y: float64(g.playerPosY)})
-	// add character to screen
 	screen.DrawImage(g.player, op)
 
 	ebitenutil.DebugPrint(screen,
@@ -153,7 +135,6 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func main() {
-	// TODO: why x2?
 
 	img, _, err := image.Decode(bytes.NewReader(images.Runner_png))
 	if err != nil {
