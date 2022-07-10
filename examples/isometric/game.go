@@ -186,6 +186,7 @@ func (g *Game) Update() error {
 // Draw draws the Game on the screen.
 func (g *Game) Draw(screen *ebiten.Image) {
 
+	g.renderLevel(screen)
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(-float64(frameWidth)/2, -float64(frameHeight)/2)
 	op.GeoM.Translate(screenWidth/2, screenHeight/2)
@@ -233,7 +234,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		),
 	)
 	// Render level.
-	g.renderLevel(screen)
 
 	// Print game info.
 	debugBox := image.NewRGBA(image.Rect(0, 0, g.w, 200))
