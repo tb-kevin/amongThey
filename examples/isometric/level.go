@@ -30,8 +30,8 @@ func (l *Level) Size() (width, height int) {
 // NewLevel returns a new randomly generated Level.
 func NewLevel() (*Level, error) {
 	l := &Level{
-		w:        30,
-		h:        30,
+		w:        20,
+		h:        20,
 		tileSize: 64,
 	}
 
