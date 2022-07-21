@@ -1,0 +1,6 @@
+version: 1.00
+enviroment: 
+  image: golang
+  variables:
+workflow:
+    - build
