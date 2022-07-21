@@ -13,9 +13,8 @@ import (
 )
 
 const (
-	screenWidth  = 240
-	screenHeight = 240
-
+	// screenWidth  = 100
+	// screenHeight = 100
 	// Background spritesheet
 	tileSize    = 16
 	tileXNum    = 25 // the number of 16px columns in the image width
@@ -33,25 +32,21 @@ var spinner = []byte(`-\|/`)
 
 // Game is an isometric demo game.
 type Game struct {
-	w, h         int
-	currentLevel *Level
-
-	camX, camY float64
-	camScale   float64
-	camScaleTo float64
-
+	w, h                 int
+	currentLevel         *Level
+	camX, camY           float64
+	camScale             float64
+	camScaleTo           float64
 	mousePanX, mousePanY int
-
-	spinnerIndex int
-
-	keys         []ebiten.Key
-	bgLayers     [][]int
-	count        int
-	bgCollisions []int
-	player       *ebiten.Image
-	playerPosX   float64
-	playerPosY   float64
-	space        *cp.Space
+	spinnerIndex         int
+	keys                 []ebiten.Key
+	bgLayers             [][]int
+	count                int
+	bgCollisions         []int
+	player               *ebiten.Image
+	playerPosX           float64
+	playerPosY           float64
+	space                *cp.Space
 }
 
 // NewGame returns a new isometric demo Game.
@@ -66,12 +61,12 @@ func NewGame() (*Game, error) {
 		log.Fatal(err)
 	}
 	space := cp.NewSpace()
-	space.Iterations = 1 // Default: 10
+	space.Iterations = 1
 
 	g := &Game{
 		currentLevel: l,
-		camScale:     2,
-		camScaleTo:   2,
+		camScale:     1,
+		camScaleTo:   1,
 		mousePanX:    math.MinInt32,
 		mousePanY:    math.MinInt32,
 		space:        space,
@@ -84,7 +79,6 @@ func NewGame() (*Game, error) {
 
 // Update reads current user input and updates the Game state.
 func (g *Game) Update() error {
-	// Update target zoom level.
 	var scrollY float64
 	if ebiten.IsKeyPressed(ebiten.KeyC) || ebiten.IsKeyPressed(ebiten.KeyPageDown) {
 		scrollY = -0.25
@@ -116,7 +110,7 @@ func (g *Game) Update() error {
 	}
 
 	// Pan camera via keyboard.
-	pan := 7.0 / g.camScale
+	pan := 2.0 / g.camScale
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
 		g.camX -= pan
 	}
@@ -129,18 +123,6 @@ func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyUp) || ebiten.IsKeyPressed(ebiten.KeyW) {
 		g.camY += pan
 	}
-	// Pan camera via mouse.
-	// if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
-	// 	if g.mousePanX == math.MinInt32 && g.mousePanY == math.MinInt32 {
-	// 		g.mousePanX, g.mousePanY = ebiten.CursorPosition()
-	// 	} else {
-	// 		x, y := ebiten.CursorPosition()
-	// 		dx, dy := float64(g.mousePanX-x)*(pan/100), float64(g.mousePanY-y)*(pan/100)
-	// 		g.camX, g.camY = g.camX-dx, g.camY+dy
-	// 	}
-	// } else if g.mousePanX != math.MinInt32 || g.mousePanY != math.MinInt32 {
-	// 	g.mousePanX, g.mousePanY = math.MinInt32, math.MinInt32
-	// }
 
 	// Clamp camera position.
 	worldWidth := float64(g.currentLevel.w * g.currentLevel.tileSize / 2)
@@ -170,13 +152,13 @@ func (g *Game) Update() error {
 	g.keys = inpututil.AppendPressedKeys(g.keys[:0])
 	for _, k := range g.keys {
 		if k == ebiten.KeyRight || k == ebiten.KeyD {
-			g.playerPosX += 3
+			g.playerPosX += 2
 		} else if k == ebiten.KeyLeft || k == ebiten.KeyA {
-			g.playerPosX -= 3
+			g.playerPosX -= 2
 		} else if k == ebiten.KeyUp || k == ebiten.KeyW {
-			g.playerPosY -= 3
+			g.playerPosY -= 2
 		} else if k == ebiten.KeyDown || k == ebiten.KeyS {
-			g.playerPosY += 3
+			g.playerPosY += 2
 		}
 	}
 
@@ -188,14 +170,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	g.renderLevel(screen)
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(-float64(frameWidth)/2, -float64(frameHeight)/2)
-	op.GeoM.Translate(screenWidth/2, screenHeight/2)
+	// op.GeoM.Translate(-float64(frameWidth)/2, -float64(frameHeight)/2)
+	// op.GeoM.Translate(screenWidth/2, screenHeight/2)
 
-	const xNum = screenWidth / tileSize // 15
+	// const xNum = screenWidth / tileSize // 15
 	for _, l := range g.bgLayers {
 		for i, t := range l {
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64((i%xNum)*tileSize), float64((i/xNum)*tileSize))
+			// op := &ebiten.DrawImageOptions{}
+			// // op.GeoM.Translate(float64((i%xNum)*tileSize), float64((i/xNum)*tileSize))
 
 			sx := (t % tileXNum) * tileSize
 			sy := (t / tileXNum) * tileSize
@@ -233,13 +215,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			g.playerPosY,
 		),
 	)
-	// Render level.
 
 	// Print game info.
 	debugBox := image.NewRGBA(image.Rect(0, 0, g.w, 200))
 	debugImg := ebiten.NewImageFromImage(debugBox)
-	// ebitenutil.DebugPrint(debugImg, fmt.Sprintf("KEYS WASD EC R\nFPS  %0.0f\nTPS  %0.0f\nSCA  %0.2f\nPOS  %0.0f,%0.0f", ebiten.CurrentFPS(), ebiten.CurrentTPS(), g.camScale, g.camX, g.camY))
-	// op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(3, 0)
 	op.GeoM.Scale(2, 2)
 	screen.DrawImage(debugImg, op)
@@ -259,16 +238,6 @@ func (g *Game) cartesianToIso(x, y float64) (float64, float64) {
 	iy := (x + y) * float64(tileSize/4)
 	return ix, iy
 }
-
-/*
-// isoToCartesian transforms isometric coordinates into cartesian coordinates.
-func (g *Game) isoToCartesian(x, y float64) (float64, float64) {
-	tileSize := g.currentLevel.tileSize
-	cx := (x/float64(tileSize/2) + y/float64(tileSize/4)) / 2
-	cy := (y/float64(tileSize/4) - (x / float64(tileSize/2))) / 2
-	return cx, cy
-}
-*/
 
 // renderLevel draws the current Level on the screen.
 func (g *Game) renderLevel(screen *ebiten.Image) {
