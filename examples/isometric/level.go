@@ -56,7 +56,7 @@ func NewLevel() (*Level, error) {
 			case isBorderSpace || val < 275:
 				t.AddSprite(ss.Wall)
 			case val < 285:
-				t.AddSprite(ss.RunnerImage)
+				t.AddSprite(ss.Statue)
 			case val < 288:
 				t.AddSprite(ss.Crown)
 			case val < 289:

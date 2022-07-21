@@ -5,7 +5,7 @@ go 1.18
 require github.com/hajimehoshi/ebiten/v2 v2.3.5
 
 require (
-	github.com/hajimehoshi/ebiten/v2 v2.3.5
+	github.com/hajimehoshi/ebiten v1.12.12
 	github.com/jakecoffman/cp v1.2.1
 )
 

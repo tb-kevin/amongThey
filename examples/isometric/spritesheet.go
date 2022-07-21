@@ -41,7 +41,7 @@ func LoadSpriteSheet(tileSize int) (*SpriteSheet, error) {
 
 	// Populate SpriteSheet.
 	s := &SpriteSheet{}
-	s.Floor = spriteAt(10, 4)
+	s.Floor = spriteAt(7, 4)
 	s.Wall = spriteAt(2, 3)
 	s.Statue = spriteAt(5, 4)
 	s.Tube = spriteAt(3, 4)
